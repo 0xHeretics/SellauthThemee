@@ -1,0 +1,84 @@
+<nav class="navbar navbar-expand-lg component" data-component-id="navbar">
+  <div class="container py-2">
+    {% if global.components.navbar.show_shop_name or global.components.navbar.show_logo %}
+    <a class="navbar-brand fw-bold" href="{{ '/' | shopUrl }}">
+      {% if global.components.navbar.show_logo and shop.image_url %}
+      <img src="{{ shop.image_url }}" alt="{{ shop.name }}" />
+      {% endif %}
+
+      {% if global.components.navbar.show_shop_name %}
+      <span>{{ shop.name }}</span>
+      {% endif %}
+    </a>
+    {% endif %}
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        {% for link in global.components.navbar.left_links %}
+        <li class="nav-item">
+          <a
+            class="{{ 'btn btn-outline-primary' if link.shape == 'button' else 'nav-link' }}"
+            href="{{ link.link | shopUrl }}"
+            target="{{ 'blank' if link.new_tab }}"
+            >{{ link.text if link.text else 'New Link' }}</a
+          >
+        </li>
+        {% endfor %}
+      </ul>
+      <ul class="navbar-nav">
+        {% for link in global.components.navbar.right_links %}
+        <li class="nav-item">
+          <a
+            class="{{ 'btn btn-outline-primary' if link.shape == 'button' else 'nav-link' }}"
+            href="{{ link.link | shopUrl }}"
+            target="{{ 'blank' if link.new_tab }}"
+            >{{ link.text if link.text else 'New Link' }}</a
+          >
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar-nav .nav-link:hover {
+    color: red;
+    text-decoration: underline;
+  	text-underline-offset: 5px;
+  }
+  
+  .navbar {
+  	transition: top 0.3s ease;
+  }
+
+  .navbar-nav .nav-link.active {
+    text-decoration: underline;
+  	text-underline-offset: 5px;
+    color: red;
+  }
+</style>
+
+<script>
+  const navbar = document.querySelector('.navbar');
+  let prevScrollPos = window.pageYOffset;
+  window.addEventListener('scroll', function() {
+    const currentScrollPos = window.pageYOffset;
+    if (prevScrollPos > currentScrollPos) {
+      navbar.style.top = "0";
+    } else {
+      navbar.style.top = `-${navbar.offsetHeight}px`;
+    }
+    prevScrollPos = currentScrollPos;
+  });
+</script>

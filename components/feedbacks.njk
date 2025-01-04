@@ -1,0 +1,132 @@
+<section class="py-20 text-block alignment-{{ properties.alignment }} bg-block-{{ properties.background }} component" data-component-id="{{ componentId }}">
+  <div class="container">
+    {% if properties.title %}
+    <div class="section-title">
+      <h2>{{ properties.title | renderString }}</h2>
+    </div>
+    {% endif %}
+    {% if properties.subtitle %}
+    <div class="section-subtitle">
+      <p>{{ properties.subtitle | renderString }}</p>
+    </div>
+    {% endif %}
+    <div class="continuous-slider-wrapper">
+      <div class="continuous-slider-container">
+        <div class="blur-overlay left"></div>
+        <div class="continuous-slider to-left">
+          {% for feedback in feedbacks %}
+            <div class="slide">
+              {% render_snippet "feedback-card.njk", feedback=feedback %}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="blur-overlay right"></div>
+      </div>
+
+      <div class="continuous-slider-container">
+        <div class="blur-overlay left"></div>
+        <div class="continuous-slider to-right">
+          {% for feedback in feedbacks %}
+            <div class="slide">
+              {% render_snippet "feedback-card.njk", feedback=feedback %}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="blur-overlay right"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.continuous-slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.continuous-slider-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.continuous-slider {
+  display: flex;
+}
+
+.to-left {
+  animation: slide-left 30s linear infinite;
+}
+
+.to-right {
+  animation: slide-right 30s linear infinite;
+}
+
+.slide {
+  flex: 0 0 300px;
+  margin-right: 20px;
+}
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-right {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.blur-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 150px; /* Augmenté pour plus de couverture */
+  z-index: 10; /* Plus haut pour s'assurer qu'il couvre les slides */
+  pointer-events: none;
+}
+
+.blur-overlay.left {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
+
+.blur-overlay.right {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
+
+/* Pause animation on hover */
+.continuous-slider-container:hover .continuous-slider {
+  animation-play-state: paused;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sliders = document.querySelectorAll('.continuous-slider');
+  sliders.forEach(slider => {
+    const slides = slider.querySelectorAll('.slide');
+    
+    // Clone slides to create a seamless loop
+    slides.forEach(slide => {
+      const clone = slide.cloneNode(true);
+      slider.appendChild(clone);
+    });
+
+    // Adjust animation duration based on the number of slides
+    const totalWidth = (slides.length * (300 + 20)) * 2; // slide width + margin, doubled for clones
+    const duration = totalWidth / 200; // 50 pixels per second
+    slider.style.animationDuration = `${duration}s`;
+  });
+});
+</script>
